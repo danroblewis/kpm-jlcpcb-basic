@@ -7,6 +7,11 @@ So far it supports:
 - resistors
 - capacitors
 
+Wanted parts:
+- diodes
+- LEDs
+- 
+
 
 Installation
 ------------
