@@ -7,11 +7,11 @@
       (effects (font (size 1 1) (thickness 0.15)))
     (tstamp e45e00c2-1c2b-4f80-9271-8f80d81b2a70)
   )
-  (fp_text value "R_0201_0603Metric" (at 0 1.05) (layer "F.Fab")
+  (fp_text value "R_0201_0603Metric" (at 0 1.05) (layer "F.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)))
     (tstamp 3ed3ef8f-c99a-41fc-9a16-221a6bfc2a16)
   )
-  (fp_text user "${REFERENCE}" (at 0 -0.68) (layer "F.Fab")
+  (fp_text user "${REFERENCE}" (at 0 -0.68) (layer "F.Fab") hide
       (effects (font (size 0.25 0.25) (thickness 0.04)))
     (tstamp f988840e-b08d-4b6e-9589-79b3a7bf0968)
   )
