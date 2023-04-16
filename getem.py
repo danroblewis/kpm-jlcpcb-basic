@@ -133,6 +133,6 @@ for section in sections:
 
 
 filedata = "(kicad_symbol_lib (version 20220914) (generator kicad_symbol_editor) " + meta_parts_text + "\n".join(part_sexps) + "\n)"
-with open('symbols/jlcpcb-basic.kicad_sym', 'w') as f:
+with open('symbols/kpm-jlcpcb-basic.kicad_sym', 'w') as f:
     f.write(filedata)
 
