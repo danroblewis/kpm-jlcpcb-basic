@@ -1,8 +1,8 @@
 {
-    "name": "kpm-jlc-basic",
-    "version": "0.0.2",
+    "name": "kpm-jlcpcb-basic",
+    "version": "0.0.7",
     "author": "danroblewis",
-    "homepage": "https://github.com/danroblewis/kpm-jlcpcb-basic",
+    "homepage": "",
     "commands": {},
     "dependencies": {}
 }
