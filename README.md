@@ -25,7 +25,7 @@ Configure your `kpm.json` file to include this library as a dependency. eg:
     "homepage": "",
     "commands": {},
     "dependencies": {
-        "kpm-jlcpcb-basic": "0.0.4",
+        "kpm-jlcpcb-basic": "0.0.5",
     }
 }
 ```
