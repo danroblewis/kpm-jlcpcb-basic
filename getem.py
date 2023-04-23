@@ -46,18 +46,28 @@ capacitor_tpl = """(
 )"""
 
 
-led_tpl = """(
-  symbol "LED {value} {footprint}" (extends "LED {footprint}")
+led_tpl = """
+(symbol "{value} LED {footprint}" (pin_numbers hide) (pin_names (offset 1.016) hide) (in_bom yes) (on_board yes)
   (property "Reference" "D" (at 0 2.54 0) (effects (font (size 1.27 1.27))) )
-  (property "Value" "{value}" (at 0 -2.54 0) (effects (font (size 1.27 1.27)) ) )
-  (property "Footprint" "" (at 1.27 7.62 0) (effects (font (size 1.27 1.27)) hide) )
+  (property "Value" "{value}" (at 0 -2.54 0) (effects (font (size 1.27 1.27)) hide) )
+  (property "Footprint" "{footprint_name}" (at -1.27 7.62 0) (effects (font (size 1.27 1.27)) hide) )
   (property "Datasheet" "{sheet}" (at 0 0 0) (effects (font (size 1.27 1.27)) hide) )
   (property "LCSC" "{partnum}" (at -1.905 4.445 0) (effects (font (size 1.27 1.27)) hide) )
   (property "Stock" "{stock}" (at -1.27 -1.905 0) (effects (font (size 1.27 1.27)) {critical_stock}))
   (property "price" "{price}" (at -1.27 -1.905 0) (effects (font (size 1.27 1.27)) hide))
   (property "ki_keywords" "LED diode" (at 0 0 0) (effects (font (size 1.27 1.27)) hide) )
   (property "ki_description" "{desc}" (at 0 0 0) (effects (font (size 1.27 1.27)) hide) )
-  (property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*" (at 0 0 0) (effects (font (size 1.27 1.27)) hide) )
+  (property "ki_fp_filters" "LED* LED_SMD:*" (at 0 0 0) (effects (font (size 1.27 1.27)) hide) )
+  (symbol "{value} LED {footprint}_0_1"
+    (polyline (pts (xy -1.27 -1.27) (xy -1.27 1.27) ) (stroke (width 0.254) (type default)) (fill (type none) (color {color} 1)) )
+    (polyline (pts (xy -3.048 -0.762) (xy -4.572 -2.286) (xy -3.81 -2.286) (xy -4.572 -2.286) (xy -4.572 -1.524) ) (stroke (width 0) (type default) (color {color} 1)) (fill (type none)) )
+    (polyline (pts (xy -1.778 -0.762) (xy -3.302 -2.286) (xy -2.54 -2.286) (xy -3.302 -2.286) (xy -3.302 -1.524) ) (stroke (width 0) (type default) (color {color} 1)) (fill (type none)) )
+  )
+  (symbol "{value} LED {footprint}_1_1"
+    (polyline (pts (xy 1.27 -1.27) (xy 1.27 1.27) (xy -1.27 0) (xy 1.27 -1.27) ) (stroke (width 0.254) (type default) ) (fill (type color) (color {color} 1))) 
+  )
+  (pin passive line (at -3.81 0 0) (length 2.54) (name "K" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))) )
+  (pin passive line (at 3.81 0 180) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))) )
 )"""
 
 
@@ -196,6 +206,17 @@ def generate_part_sexps(parts):
         continue
       symbol, tpl = part_stuff[component_type]
 
+      spec = part['componentSpecificationEn']
+      if spec in footprint_equivalents:
+        spec = footprint_equivalents[spec]
+
+      if spec not in supported_footprints:
+        print(f"skipping {part['componentCode']} because {spec} not supported: {part['describe']}")
+        continue
+
+      color = None
+      footprint_name = None
+
       if "Resistor" in component_type:
         value = part['erpComponentName'].split("Ω")[0].split(" ")[-1]
       elif "Capacitor" in component_type:
@@ -203,9 +224,25 @@ def generate_part_sexps(parts):
       elif "LED" in component_type:
         colors = [ 'yellow', 'white', 'red', 'blue' ]
         value = "unknown"
+        fpns = {
+          "0201": "kpm-jlcpcb-basic:LED_0201_0603Metric",
+          "0402": "kpm-jlcpcb-basic:LED_0402_1005Metric",
+          "0603": "kpm-jlcpcb-basic:LED_0603_1608Metric",
+          "0805": "kpm-jlcpcb-basic:LED_0805_2012Metric",
+        }
+        colorstrs = {
+          "green": "123 255 125",
+          "yellow": "255 255 161",
+          "red": "255 115 94",
+          "blue": "135 174 255",
+          "white": "201 216 225",
+        }
         for color in colors:
           if color in part['describe'].lower():
             value = color
+        if value:
+          footprint_name = fpns[spec]
+          color = colorstrs[value]
       elif "BJT" in component_type:
         if "NPN" in part['describe']:
           value = f"NPN {part['componentModelEn']}"
@@ -226,13 +263,6 @@ def generate_part_sexps(parts):
         else:
           continue
 
-      spec = part['componentSpecificationEn']
-      if spec in footprint_equivalents:
-        spec = footprint_equivalents[spec]
-
-      if spec not in supported_footprints:
-        print(f"skipping {part['componentCode']} because {spec} not supported: {part['describe']}")
-        continue
 
       if "MHz" in value:
         print(value)
@@ -245,7 +275,9 @@ def generate_part_sexps(parts):
         desc=part['describe'],
         stock=part['stockCount'],
         price=part['componentPrices'][0]['productPrice'],
-        critical_stock=("hide" if part['stockCount'] > 1000 else "")
+        critical_stock=("hide" if part['stockCount'] > 1000 else ""),
+        footprint_name=footprint_name,
+        color=color,
       )
       part_sexps.append(fp)
     return part_sexps
@@ -255,7 +287,6 @@ parts = get_parts()
 with open('a.json', 'w') as f:
   f.write(json.dumps(parts))
 part_sexps = generate_part_sexps(parts)
-
 
 filedata = "(kicad_symbol_lib (version 20220914) (generator kicad_symbol_editor) " + meta_parts_text + "\n".join(part_sexps) + "\n)"
 with open('symbols/kpm-jlcpcb-basic.kicad_sym', 'w') as f:
