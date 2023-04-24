@@ -4452,7 +4452,7 @@
 
     )
 
-    (property "Footprint" "kpm-jlcpcb-basic:TO-3" (at 5.08 -1.905 0)
+    (property "Footprint" "kpm-jlcpcb-basic:SOT-23" (at 5.08 -1.905 0)
 
       (effects (font (size 1.27 1.27) italic) (justify left) hide)
 
@@ -4882,7 +4882,7 @@
 
     )
 
-    (property "Footprint" "kpm-jlcpcb-basic:TO-220-3_Vertical" (at 5.08 -1.905 0)
+    (property "Footprint" "kpm-jlcpcb-basic:SOT-23" (at 5.08 -1.905 0)
 
       (effects (font (size 1.27 1.27) italic) (justify left) hide)
 
