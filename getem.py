@@ -222,7 +222,7 @@ def generate_part_sexps(parts):
       elif "Capacitor" in component_type:
         value = re.match('([.0-9]+.?F ).*', part['erpComponentName']).group(1).replace("F ","")
       elif "LED" in component_type:
-        colors = [ 'yellow', 'white', 'red', 'blue' ]
+        colors = [ 'yellow', 'white', 'red', 'blue', 'green', 'emerald' ]
         value = "unknown"
         fpns = {
           "0201": "kpm-jlcpcb-basic:LED_0201_0603Metric",
@@ -232,6 +232,7 @@ def generate_part_sexps(parts):
         }
         colorstrs = {
           "green": "123 255 125",
+          "emerald": "123 255 125",
           "yellow": "255 255 161",
           "red": "255 115 94",
           "blue": "135 174 255",
